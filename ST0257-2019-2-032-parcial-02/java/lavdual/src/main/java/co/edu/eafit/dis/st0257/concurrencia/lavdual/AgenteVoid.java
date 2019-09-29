@@ -18,29 +18,22 @@ public class AgenteVoid implements Sincronizador {
      * @param cap        determina la capacidad inicial de la lavadora.
      */
     public synchronized void arrancar(LavadoraID lavadoraID, int cap) {
-        // ToDo This must be implemented
 
-        System.out.println("Arrancar " + lavadoraID + "   " + cap);
         cargaTotal += cap;
         lavIniciadas++;
         if (lavIniciadas == 1){
             try{
-                System.out.println(lavadoraID + " esperando");
+                // Si inicia una, se queda esperando a que la otra arranque para revisar si pueden lavar las dos al mismo tiempo.
                 wait();
             }
             catch(InterruptedException ie){ }
         }
         else{
+            // Al llegar la segunda se revisa si pueden lavar en paralelo, si es así despierta a la primera para continuar juntas.
             if (cargaTotal == genCargas.obtenerCargaMax()){
                 notify();
-                System.out.println("Lavando las dos");
             }
         }
-        System.out.println(lavadoraID + " lavando");
-        // int max = genCargas.obtenerCargaMax();
-
-        // int carga = max - cap;
-        
     }
 
 
@@ -50,26 +43,24 @@ public class AgenteVoid implements Sincronizador {
      * @param lavadoraID determina quien pone un carga.
      */
     public synchronized void parar(LavadoraID lavadoraID) {
-        // ToDo This must be implemented
-        System.out.println("Parar " + lavadoraID); 
+
         lavParadas++;
         if (lavParadas == 1){
+            // Una vez termina la primera, verifica si la otra tambien estaba en reposo, si es así la despierta y la espera. 
             if (cargaTotal != genCargas.obtenerCargaMax()){
                 notify();
             }
             try{
-                // System.out.println(lavadoraID + " parada");
                 wait();
             }
             catch(InterruptedException ie){ }
         }
         else{
+            // Una vez para la segunda lavadora notifica a la primera y reinicia el proceso.
             notify();
             cargaTotal = 0;
             lavIniciadas = 0;
             lavParadas = 0;
         }
-        
-
     }
 }

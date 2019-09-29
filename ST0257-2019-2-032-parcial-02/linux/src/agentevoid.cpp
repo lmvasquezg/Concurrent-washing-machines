@@ -22,36 +22,42 @@ AgenteVoid::~AgenteVoid() {
 }
 
 void AgenteVoid::arrancar(LavadoraID lavadoraID, int carga) {
+  // Sección critica para contadores.
   sem_wait(&mutex1);
   sumCargas+= carga;
   contInicio++;
   if(contInicio == 1) {
+    // Al arrancar la primera espera a la segunda, permitiendo el acceso a la seccion critica.
     sem_post(&mutex1);
     sem_wait(&sync1);
     sem_wait(&mutex1);
   } else  {
     if(sumCargas == genCarga.obtenerCargaMax()){
-      sem_post(&sync1);
+        // Al arrancar la segunda verifica que se cumpla la condicion para lavar en paralelo, si es así despierta a la primera.
+        sem_post(&sync1);
     }
   }
   sem_post(&mutex1);
 }
 
 void AgenteVoid::parar(LavadoraID lavadoraID) {
-  sem_wait(&mutex2);
-  contFinal++;
-  if(contFinal==1){
-    if(sumCargas != genCarga.obtenerCargaMax()){
-      sem_post(&sync1); 
+    //  Seccion critica para contadores.
+    sem_wait(&mutex2);
+    contFinal++;
+    if(contFinal==1){
+        // Si llega la primera revisa si la otra está en reposo y si es así la despierta y espera.
+        if(sumCargas != genCarga.obtenerCargaMax()){
+            sem_post(&sync1); 
+        }
+        sem_post(&mutex2);
+        sem_wait(&sync2);
+        sem_wait(&mutex2);
+    }else {
+        // Al llegar la segunda despierta a la primera y reinicia el proceso.
+        sem_post(&sync2);
+        sumCargas=0;
+        contInicio=0;
+        contFinal=0;
     }
     sem_post(&mutex2);
-    sem_wait(&sync2);
-    sem_wait(&mutex2);
-  }else {
-    sem_post(&sync2);
-    sumCargas=0;
-    contInicio=0;
-    contFinal=0;
-  }
-  sem_post(&mutex2);
 }
