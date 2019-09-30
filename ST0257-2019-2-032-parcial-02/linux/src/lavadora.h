@@ -9,6 +9,7 @@ class Lavadora {
   Sincronizador& agenteSin;
   GenCarga& genCarga;
   double p; 
+  long veces;
  public:
   Lavadora(LavadoraID lavadoraID,
 	   Sincronizador& agenteSin,
@@ -17,5 +18,6 @@ class Lavadora {
   ~Lavadora();
   void operator()(void);
   void lavar();
+  long obtenerVeces();
 };
 

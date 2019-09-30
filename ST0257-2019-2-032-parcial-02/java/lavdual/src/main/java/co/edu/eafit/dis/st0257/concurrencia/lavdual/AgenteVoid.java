@@ -30,7 +30,7 @@ public class AgenteVoid implements Sincronizador {
         }
         else{
             // Al llegar la segunda se revisa si pueden lavar en paralelo, si es así despierta a la primera para continuar juntas.
-            if (cargaTotal == genCargas.obtenerCargaMax()){
+            if (cargaTotal <= genCargas.obtenerCargaMax()){
                 notify();
             }
         }
@@ -47,7 +47,7 @@ public class AgenteVoid implements Sincronizador {
         lavParadas++;
         if (lavParadas == 1){
             // Una vez termina la primera, verifica si la otra tambien estaba en reposo, si es así la despierta y la espera. 
-            if (cargaTotal != genCargas.obtenerCargaMax()){
+            if (cargaTotal > genCargas.obtenerCargaMax()){
                 notify();
             }
             try{

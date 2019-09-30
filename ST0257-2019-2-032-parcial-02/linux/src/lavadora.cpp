@@ -23,5 +23,9 @@ void Lavadora::operator()() {
 }
 
 void Lavadora::lavar() {
+  veces++;
+}
 
+long Lavadora::obtenerVeces() {
+  return veces;
 }

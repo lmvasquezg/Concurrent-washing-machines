@@ -32,7 +32,7 @@ void AgenteVoid::arrancar(LavadoraID lavadoraID, int carga) {
     sem_wait(&sync1);
     sem_wait(&mutex1);
   } else  {
-    if(sumCargas == genCarga.obtenerCargaMax()){
+    if(sumCargas <= genCarga.obtenerCargaMax()){
         // Al arrancar la segunda verifica que se cumpla la condicion para lavar en paralelo, si es así despierta a la primera.
         sem_post(&sync1);
     }
@@ -46,7 +46,7 @@ void AgenteVoid::parar(LavadoraID lavadoraID) {
     contFinal++;
     if(contFinal==1){
         // Si llega la primera revisa si la otra está en reposo y si es así la despierta y espera.
-        if(sumCargas != genCarga.obtenerCargaMax()){
+        if(sumCargas > genCarga.obtenerCargaMax()){
             sem_post(&sync1); 
         }
         sem_post(&mutex2);

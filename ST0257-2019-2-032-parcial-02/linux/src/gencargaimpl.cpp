@@ -8,5 +8,5 @@ GenCargaImpl::~GenCargaImpl() { }
 
 int
 GenCargaImpl::obtenerSigCarga() {
-  return (random() % obtenerCargaMax()) + 1;
+  return (rand() % obtenerCargaMax()) + 1;
 }
