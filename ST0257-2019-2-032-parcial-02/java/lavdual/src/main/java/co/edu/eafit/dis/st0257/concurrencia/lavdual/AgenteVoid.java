@@ -4,9 +4,9 @@ public class AgenteVoid implements Sincronizador {
 
     private GenCargas genCargas;
 
-    int cargaTotal = 0;
-    int lavIniciadas = 0;
-    int lavParadas = 0;
+    private int cargaTotal = 0;
+    private int lavIniciadas = 0;
+    private int lavParadas = 0;
 
     public AgenteVoid(GenCargas genCargas) {
 	    this.genCargas = genCargas;
